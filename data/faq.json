@@ -1,0 +1,74 @@
+[
+  {
+    "question": "What is the difference between CSS Grid and Flexbox?",
+    "answer": "Flexbox is a one-dimensional layout system — it arranges items along a single axis (either a row or a column). Grid is two-dimensional — it controls both rows and columns simultaneously. Use Flexbox for component-level layouts like navigation bars and card rows. Use Grid for page-level structure or any layout where you need precise two-axis control."
+  },
+  {
+    "question": "What does 1fr mean in CSS Grid?",
+    "answer": "The fr unit stands for fraction of available space. After all fixed-size and auto-size tracks are assigned their space, the browser divides the remaining space proportionally by fr values. So '1fr 2fr' gives the second column twice as much remaining space as the first. This is the primary unit for building flexible, responsive grids without media queries."
+  },
+  {
+    "question": "How do grid-template-areas work?",
+    "answer": "grid-template-areas lets you name regions of your grid using strings. Each quoted string represents one row, and each word in the string represents one cell in that row. Every named area must form a rectangle — you cannot have an L-shaped area. Use the same name across adjacent cells to span the area across multiple tracks. Assign an element to an area with grid-area: name. Use a dot (.) for empty cells."
+  },
+  {
+    "question": "What is CSS Subgrid and when should I use it?",
+    "answer": "Subgrid lets a child element inherit its parent's grid tracks instead of creating an independent new grid. Set grid-template-columns: subgrid or grid-template-rows: subgrid on the child. This is useful when you have card grids and want the labels, content, and footers inside each card to align across adjacent cards — something impossible without subgrid. It is supported in all modern browsers since 2023."
+  },
+  {
+    "question": "What is the difference between justify-content and align-items in Flexbox?",
+    "answer": "justify-content controls distribution along the main axis (the direction set by flex-direction). align-items controls alignment on the cross axis, perpendicular to it. If flex-direction is row, justify-content moves items left and right, and align-items moves them up and down. If flex-direction is column, the axes flip."
+  },
+  {
+    "question": "How do I center an element with Flexbox?",
+    "answer": "Apply display: flex; justify-content: center; align-items: center to the parent container. This centers the child both horizontally and vertically within the parent. This is the most universal centering pattern in CSS and works regardless of the child's size."
+  },
+  {
+    "question": "How do I center an element with CSS Grid?",
+    "answer": "Apply display: grid; place-items: center to the parent. The place-items shorthand sets both align-items and justify-items at once. Alternatively, place-content: center centers the entire grid content. For a single child, you can also use margin: auto on the child element inside a grid container."
+  },
+  {
+    "question": "What does flex: 1 mean?",
+    "answer": "flex: 1 expands to flex: 1 1 0, which sets flex-grow: 1, flex-shrink: 1, and flex-basis: 0. The zero basis means the item's natural content size is ignored — items start from zero and grow to fill available space equally. This is the standard equal-columns pattern. flex: 1 1 auto, by contrast, respects natural content size before distributing remaining space."
+  },
+  {
+    "question": "What is flex-basis and how does it differ from width?",
+    "answer": "flex-basis sets the initial size of a flex item before the browser applies flex-grow and flex-shrink adjustments. It is similar to width (or height in a column direction), but it takes precedence over width when both are set. When flex-basis is auto, the item's width property or intrinsic content size is used as the starting size before flex distribution."
+  },
+  {
+    "question": "What is the gap property in CSS?",
+    "answer": "gap (formerly grid-gap) sets the spacing between grid tracks or flex items. It accepts one value to set both row and column gaps equally, or two values to set them independently: gap: row-gap column-gap. gap is available in both Grid and Flexbox. Unlike margin, it only applies between items — never on the outer edges of the container."
+  },
+  {
+    "question": "What is auto-placement in CSS Grid?",
+    "answer": "When you define a grid but do not explicitly place children, the browser places them automatically using the auto-placement algorithm. Items flow into the next available cell, filling rows by default. The grid-auto-flow property controls this behavior: row (default), column, or dense (which backfills gaps with smaller items). Auto-placement is powerful for dynamic content lists."
+  },
+  {
+    "question": "Can I use repeat() in grid-template-columns?",
+    "answer": "Yes. repeat(3, 1fr) is equivalent to writing 1fr 1fr 1fr. You can also use auto-fill and auto-fit inside repeat for responsive grids without media queries: repeat(auto-fit, minmax(200px, 1fr)) creates as many 200px-minimum columns as fit the container, distributing leftover space across them."
+  },
+  {
+    "question": "What is minmax() in CSS Grid?",
+    "answer": "minmax(min, max) defines a track that is at least min wide and at most max wide. The browser picks the track size within that range based on available space. minmax(100px, 1fr) means the track is never narrower than 100px but can grow as a fraction of remaining space. This is the key ingredient in responsive grid patterns like repeat(auto-fit, minmax(200px, 1fr))."
+  },
+  {
+    "question": "What is align-content vs align-items in Flexbox?",
+    "answer": "align-items controls how items are aligned within a single row (or column in column direction). align-content controls how multiple rows are distributed within the container when flex-wrap: wrap is set and there is extra space in the cross-axis direction. align-content has no effect on single-row flex containers."
+  },
+  {
+    "question": "Does Subgrid work in all browsers?",
+    "answer": "Yes, as of August 2023. Chrome 117, Firefox 71, and Safari 16 all support subgrid. Edge (Chromium-based) supports it as of version 117. There is no longer a need for a polyfill for modern browser targets. For legacy IE or older Safari targets, a layout fallback using explicit track definitions is required."
+  },
+  {
+    "question": "Can this generator output both CSS and HTML?",
+    "answer": "Yes. Each tab has an output mode toggle for CSS or HTML. CSS mode outputs container and item rules, including placement or flex properties. HTML mode outputs matching markup with class names so you can copy a complete starter structure quickly."
+  },
+  {
+    "question": "Can I create and resize items visually in the preview?",
+    "answer": "Yes. In Grid and Subgrid previews, click a cell to add an item or child, then drag edge handles to resize the span across columns and rows. This lets you test placement visually before copying CSS."
+  },
+  {
+    "question": "Does the tool include layout templates and BEM-friendly class names?",
+    "answer": "Yes. The Grid tab includes starter templates like Holy Grail, Sidebar, Card Grid, Sticky Footer, Dashboard, and 3 Equal Columns. Generated item classes support custom labels, and default names follow a BEM-style pattern such as container__item-1."
+  }
+]

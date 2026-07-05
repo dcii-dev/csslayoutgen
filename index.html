@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Visual CSS Grid, Subgrid, and Flexbox layout builder with templates, click-to-add items, drag-resize controls, and CSS or HTML output.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="CSS Grid, Subgrid & Flexbox Layout Generator | CSSLayoutGen">
+  <meta property="og:description"
+    content="Build CSS Grid, Subgrid, and Flexbox layouts visually with templates, interactive previews, and production-ready CSS or HTML output.">
+  <meta property="og:url" content="https://csslayoutgen.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://csslayoutgen.com/images/opengraph.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CSS Grid, Subgrid & Flexbox Layout Generator | CSSLayoutGen">
+  <meta name="twitter:description"
+    content="Visual CSS Grid, Subgrid, and Flexbox builder with templates, click-to-add and drag-resize previews, and CSS or HTML output.">
+  <meta name="twitter:image" content="https://csslayoutgen.com/images/opengraph.png">
+  <link rel="canonical" href="https://csslayoutgen.com/">
+  <title>CSS Grid, Subgrid & Flexbox Layout Generator | CSSLayoutGen</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/favicon.png">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/ads.css">
+  <script>
+    (function () {
+      var t = localStorage.getItem('csslayoutgen-theme');
+      if (t === 'dark' || t === 'light') {
+        document.documentElement.setAttribute('data-theme', t);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- SKIP NAVIGATION -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- HEADER -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a href="/" class="site-header__logo" aria-label="CSSLayoutGen home">
+        <img src="images/favicon.svg" alt="" width="32" height="32" class="site-header__icon">
+        CSSLayoutGen
+      </a>
+      <div class="site-header__actions">
+        <a class="site-header__hub-link" href="https://otherusefultools.com/" aria-label="Visit OtherUsefulTools.com">
+          OtherUsefulTools.com
+        </a>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode"
+          aria-pressed="false">
+          <span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">&#9728;</span>
+          <span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true">&#9790;</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- AD LEADERBOARD TOP -->
+  <div class="ad-slot ad-slot--leaderboard" aria-hidden="true">
+    <span class="ad-slot__label">Advertisement</span>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="site-main" id="main-content">
+
+    <!-- TOOL SECTION -->
+    <section class="tool-section" aria-labelledby="tool-heading">
+      <div class="tool-section__inner">
+
+        <h1 class="tool-section__title" id="tool-heading">CSS Grid, Subgrid &amp; Flexbox Layout Generator</h1>
+        <p class="tool-section__description">
+          Configure Grid, Subgrid, and Flexbox visually with templates, click-to-add items, drag-resize controls,
+          and CSS or HTML output modes.
+        </p>
+
+        <!-- LIVE STATUS -->
+        <div class="sr-only" id="tab-status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tab-nav" role="tablist" aria-label="Layout type">
+          <button class="tab-btn tab-btn--active" role="tab" id="tab-grid" aria-controls="panel-grid"
+            aria-selected="true" tabindex="0">Grid</button>
+          <button class="tab-btn" role="tab" id="tab-subgrid" aria-controls="panel-subgrid"
+            aria-selected="false" tabindex="-1">Subgrid</button>
+          <button class="tab-btn" role="tab" id="tab-flexbox" aria-controls="panel-flexbox"
+            aria-selected="false" tabindex="-1">Flexbox</button>
+        </div>
+
+        <!-- ======================== GRID PANEL ======================== -->
+        <div class="tab-panel" id="panel-grid" role="tabpanel" aria-labelledby="tab-grid">
+          <div class="tool-layout">
+
+            <!-- GRID CONTROLS -->
+            <div class="tool-controls">
+              <div class="controls-header">
+                <button class="reset-btn" id="grid-reset-btn" type="button"
+                  data-tooltip="Reset all grid settings back to their default values">&#8635; Reset</button>
+              </div>
+
+              <div class="control-group">
+                <label class="control-group__label" for="grid-template-select">Templates</label>
+                <select class="form-group__input" id="grid-template-select">
+                  <option value="">Custom</option>
+                  <option value="holy-grail">Holy Grail</option>
+                  <option value="sidebar">Sidebar</option>
+                  <option value="card-grid">Card Grid</option>
+                  <option value="sticky-footer">Sticky Footer</option>
+                  <option value="dashboard">Dashboard</option>
+                  <option value="equal-3col">3 Equal Columns</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <div class="control-group__header">
+                  <label class="control-group__label" for="grid-columns">Columns</label>
+                  <div class="track-hints" role="group" aria-label="Append common column track sizes">
+                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="1fr"
+                      data-tooltip="Fraction of remaining space. After fixed tracks are placed, leftover space is split by total fr count. 1fr 2fr gives the second track twice as much.">1fr</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="auto"
+                      data-tooltip="Shrinks to fit content. Grows to fill remaining space if no fr tracks are present. Best for content-driven sizing.">auto</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="200px"
+                      data-tooltip="Fixed pixel width. This track always stays exactly 200px regardless of container or viewport size.">200px</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="repeat(3,1fr)"
+                      data-tooltip="Shorthand to repeat a track pattern N times. repeat(3,1fr) is the same as 1fr 1fr 1fr. Supports auto-fill and auto-fit for responsive grids.">repeat()</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="minmax(100px,1fr)"
+                      data-tooltip="Sets a minimum and maximum size. minmax(100px,1fr) means at least 100px wide, but grows as a fraction of remaining space.">minmax</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="min-content"
+                      data-tooltip="Shrinks to the smallest possible size without overflowing content. For text, this is the longest unbreakable word width.">min-c</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="max-content"
+                      data-tooltip="Grows to fit all content on one line with no wrapping. Use carefully: can cause overflow on small screens.">max-c</button>
+                  </div>
+                </div>
+                <input class="form-group__input" type="text" id="grid-columns" value="1fr 1fr 1fr" autocomplete="off"
+                  spellcheck="false" aria-describedby="grid-columns-hint">
+                <span class="form-group__hint" id="grid-columns-hint">Space-separated track sizes. Supports
+                  <code>fr</code>, <code>px</code>, <code>auto</code>, <code>repeat()</code>,
+                  <code>minmax()</code>.</span>
+              </div>
+
+              <div class="control-group">
+                <div class="control-group__header">
+                  <label class="control-group__label" for="grid-rows">Rows</label>
+                  <div class="track-hints" role="group" aria-label="Append common row track sizes">
+                    <button class="track-hint-btn" type="button" data-target="grid-rows" data-value="1fr"
+                      data-tooltip="Fraction of remaining space. 1fr rows divide leftover height proportionally among all fr rows.">1fr</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-rows" data-value="auto"
+                      data-tooltip="Shrinks to fit the tallest content in that row. The most common row size for natural content flow.">auto</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-rows" data-value="100px"
+                      data-tooltip="Fixed pixel height. This row always stays exactly 100px regardless of content size.">100px</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-rows" data-value="repeat(3,auto)"
+                      data-tooltip="Shorthand to repeat a track pattern N times. repeat(3,auto) creates three content-height rows without writing them individually.">repeat()</button>
+                    <button class="track-hint-btn" type="button" data-target="grid-rows" data-value="minmax(60px,auto)"
+                      data-tooltip="Sets a minimum height of 60px but expands to fit taller content. Prevents rows from collapsing while staying flexible.">minmax</button>
+                  </div>
+                </div>
+                <input class="form-group__input" type="text" id="grid-rows" value="80px 1fr 60px" autocomplete="off"
+                  spellcheck="false" aria-describedby="grid-rows-hint">
+                <span class="form-group__hint" id="grid-rows-hint">Space-separated track sizes. Use
+                  <code>auto</code> to shrink-wrap content.</span>
+              </div>
+
+              <div class="control-group">
+                <span class="control-group__label">Gap</span>
+                <div class="gap-row">
+                  <div class="gap-input-group">
+                    <label class="gap-input-group__label" for="grid-col-gap">Column</label>
+                    <input class="form-group__input gap-input-group__input" type="text" id="grid-col-gap" value="1rem"
+                      autocomplete="off" spellcheck="false">
+                  </div>
+                  <label class="link-toggle" title="Link column and row gap">
+                    <input type="checkbox" id="grid-gap-linked" checked>
+                    <span class="link-toggle__label">Link</span>
+                  </label>
+                  <div class="gap-input-group">
+                    <label class="gap-input-group__label" for="grid-row-gap">Row</label>
+                    <input class="form-group__input gap-input-group__input" type="text" id="grid-row-gap" value="1rem"
+                      autocomplete="off" spellcheck="false">
+                  </div>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <div class="grid-2col">
+                  <div class="control-group">
+                    <label class="control-group__label" for="grid-align-items">
+                      align-items
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Aligns all grid items along the block (column) axis within their cells. Stretch makes items fill the cell height."
+                        aria-label="About align-items">&#9432;</button>
+                    </label>
+                    <select class="form-group__input" id="grid-align-items">
+                      <option value="stretch" selected>stretch</option>
+                      <option value="start">start</option>
+                      <option value="end">end</option>
+                      <option value="center">center</option>
+                      <option value="baseline">baseline</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-group__label" for="grid-justify-items">
+                      justify-items
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Aligns all grid items along the inline (row) axis within their cells. Stretch makes items fill the cell width."
+                        aria-label="About justify-items">&#9432;</button>
+                    </label>
+                    <select class="form-group__input" id="grid-justify-items">
+                      <option value="stretch" selected>stretch</option>
+                      <option value="start">start</option>
+                      <option value="end">end</option>
+                      <option value="center">center</option>
+                      <option value="baseline">baseline</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="toggle-label">
+                  <input type="checkbox" class="toggle-label__checkbox" id="grid-areas-toggle">
+                  <span class="toggle-label__text">Named areas</span>
+                </label>
+                <div id="grid-areas-wrapper" hidden>
+                  <p class="form-group__hint" style="margin-top:0.5rem;margin-bottom:0.75rem;">
+                    Type an area name in each cell. Use the same name across adjacent cells to span. Use
+                    <code>.</code> for empty cells.
+                  </p>
+                  <div id="grid-areas-grid" class="areas-grid" role="group"
+                    aria-label="Named grid areas editor"></div>
+                  <div class="areas-error" id="grid-areas-error" role="alert" hidden></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- GRID PREVIEW + OUTPUT -->
+            <div class="tool-preview">
+              <div class="preview-pane">
+                <div class="preview-pane__header">
+                  <span class="preview-pane__label">Preview</span>
+                  <span class="preview-pane__meta" id="grid-track-info"></span>
+                </div>
+                <div class="preview-container" id="grid-preview" aria-label="Grid layout preview" role="img"></div>
+              </div>
+              <div class="output-pane">
+                <div class="output-pane__header">
+                  <div class="output-toggle" role="group" aria-label="Output format">
+                    <button class="output-toggle__btn output-toggle__btn--active" type="button"
+                      data-panel="grid" data-mode="css">CSS</button>
+                    <button class="output-toggle__btn" type="button"
+                      data-panel="grid" data-mode="html">HTML</button>
+                  </div>
+                  <label class="selector-group">
+                    <span class="selector-group__prefix" aria-hidden="true">.</span>
+                    <input class="selector-group__input" type="text" id="grid-selector" value="container"
+                      aria-label="CSS class name for the grid container" autocomplete="off" spellcheck="false"
+                      maxlength="40">
+                  </label>
+                  <button class="copy-btn" id="grid-copy-btn" type="button"
+                    aria-label="Copy grid CSS to clipboard">Copy</button>
+                </div>
+                <pre class="output-code" id="grid-output" tabindex="0"></pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ======================== SUBGRID PANEL ======================== -->
+        <div class="tab-panel" id="panel-subgrid" role="tabpanel" aria-labelledby="tab-subgrid" hidden>
+          <div class="tool-layout">
+
+            <div class="tool-controls">
+              <div class="controls-header">
+                <button class="reset-btn" id="sub-reset-btn" type="button"
+                  data-tooltip="Reset all subgrid settings back to their default values">&#8635; Reset</button>
+              </div>
+              <p class="control-intro">
+                Subgrid lets a child element inherit track sizing from the parent grid. The child participates in the
+                parent's column and/or row tracks instead of defining its own.
+              </p>
+
+              <fieldset class="control-fieldset">
+                <legend class="control-fieldset__legend">Parent Grid</legend>
+                <div class="control-group">
+                  <div class="control-group__header">
+                    <label class="control-group__label" for="sub-parent-columns">Columns</label>
+                    <div class="track-hints" role="group" aria-label="Append common column track sizes">
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="1fr"
+                        data-tooltip="Fraction of remaining space. 1fr columns divide leftover width proportionally.">1fr</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="auto"
+                        data-tooltip="Shrinks to fit content. Grows to fill remaining space if no fr tracks are present.">auto</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="200px"
+                        data-tooltip="Fixed pixel width. This track always stays exactly 200px.">200px</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="repeat(3,1fr)"
+                        data-tooltip="Shorthand to repeat a track pattern N times. repeat(3,1fr) = 1fr 1fr 1fr.">repeat()</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="minmax(100px,1fr)"
+                        data-tooltip="Sets a minimum and maximum size. minmax(100px,1fr) = at least 100px, grows as fraction.">minmax</button>
+                    </div>
+                  </div>
+                  <input class="form-group__input" type="text" id="sub-parent-columns"
+                    value="1fr 1fr 1fr 1fr" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="control-group">
+                  <div class="control-group__header">
+                    <label class="control-group__label" for="sub-parent-rows">Rows</label>
+                    <div class="track-hints" role="group" aria-label="Append common row track sizes">
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="1fr"
+                        data-tooltip="Fraction of remaining space. 1fr rows divide leftover height proportionally.">1fr</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="auto"
+                        data-tooltip="Shrinks to fit the tallest content in that row.">auto</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="100px"
+                        data-tooltip="Fixed pixel height. This row always stays exactly 100px.">100px</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="repeat(3,auto)"
+                        data-tooltip="Shorthand to repeat a track pattern N times. repeat(3,auto) = three content-height rows.">repeat()</button>
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="minmax(60px,auto)"
+                        data-tooltip="Minimum height of 60px but expands to fit taller content.">minmax</button>
+                    </div>
+                  </div>
+                  <input class="form-group__input" type="text" id="sub-parent-rows"
+                    value="80px auto 60px" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="control-group">
+                  <label class="control-group__label" for="sub-parent-gap">Gap</label>
+                  <input class="form-group__input" type="text" id="sub-parent-gap" value="1rem"
+                    style="max-width:10rem;" autocomplete="off" spellcheck="false">
+                </div>
+              </fieldset>
+
+              <div class="control-group">
+                <div class="control-group__header">
+                  <span class="control-group__label">Subgrid Children</span>
+                  <button class="add-item-btn" id="sub-add-child" type="button">+ Add child</button>
+                </div>
+                <div class="sub-children-list" id="sub-children-list" role="group"
+                  aria-label="Subgrid children configuration" aria-live="polite"></div>
+              </div>
+            </div>
+
+            <div class="tool-preview">
+              <div class="preview-pane">
+                <div class="preview-pane__header">
+                  <span class="preview-pane__label">Preview</span>
+                </div>
+                <div class="preview-container preview-container--subgrid" id="sub-preview"
+                  aria-label="Subgrid layout preview" role="img"></div>
+              </div>
+              <div class="output-pane">
+                <div class="output-pane__header">
+                  <div class="output-toggle" role="group" aria-label="Output format">
+                    <button class="output-toggle__btn output-toggle__btn--active" type="button"
+                      data-panel="subgrid" data-mode="css">CSS</button>
+                    <button class="output-toggle__btn" type="button"
+                      data-panel="subgrid" data-mode="html">HTML</button>
+                  </div>
+                  <label class="selector-group">
+                    <span class="selector-group__prefix" aria-hidden="true">.</span>
+                    <input class="selector-group__input" type="text" id="sub-selector" value="parent"
+                      aria-label="CSS class name for the parent grid" autocomplete="off" spellcheck="false"
+                      maxlength="40">
+                  </label>
+                  <button class="copy-btn" id="sub-copy-btn" type="button"
+                    aria-label="Copy subgrid CSS to clipboard">Copy</button>
+                </div>
+                <pre class="output-code" id="sub-output" tabindex="0"></pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ======================== FLEXBOX PANEL ======================== -->
+        <div class="tab-panel" id="panel-flexbox" role="tabpanel" aria-labelledby="tab-flexbox" hidden>
+          <div class="tool-layout">
+
+            <div class="tool-controls">
+              <div class="controls-header">
+                <button class="reset-btn" id="flex-reset-btn" type="button"
+                  data-tooltip="Reset all flexbox settings back to their default values">&#8635; Reset</button>
+              </div>
+
+              <fieldset class="control-fieldset">
+                <legend class="control-fieldset__legend">Container</legend>
+                <div class="grid-2col">
+                  <div class="control-group">
+                    <label class="control-group__label" for="flex-direction">
+                      flex-direction
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Sets the main axis direction. row=left to right (default). column=top to bottom. -reverse variants flip the order."
+                        aria-label="About flex-direction">&#9432;</button>
+                    </label>
+                    <select class="form-group__input" id="flex-direction">
+                      <option value="row" selected>row</option>
+                      <option value="row-reverse">row-reverse</option>
+                      <option value="column">column</option>
+                      <option value="column-reverse">column-reverse</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-group__label" for="flex-wrap">
+                      flex-wrap
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Whether items wrap to a new line when they run out of space. nowrap=single line. wrap=items wrap to next line. Use wrap for responsive layouts."
+                        aria-label="About flex-wrap">&#9432;</button>
+                    </label>
+                    <select class="form-group__input" id="flex-wrap">
+                      <option value="nowrap" selected>nowrap</option>
+                      <option value="wrap">wrap</option>
+                      <option value="wrap-reverse">wrap-reverse</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-group__label" for="flex-justify">
+                      justify-content
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Distributes items along the main axis. Controls spacing between items: flex-start, center, space-between, space-around, space-evenly."
+                        aria-label="About justify-content">&#9432;</button>
+                    </label>
+                    <select class="form-group__input" id="flex-justify">
+                      <option value="flex-start" selected>flex-start</option>
+                      <option value="flex-end">flex-end</option>
+                      <option value="center">center</option>
+                      <option value="space-between">space-between</option>
+                      <option value="space-around">space-around</option>
+                      <option value="space-evenly">space-evenly</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-group__label" for="flex-align-items">
+                      align-items
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Aligns items on the cross axis within each line. stretch makes items fill the container height. center vertically centers them."
+                        aria-label="About align-items">&#9432;</button>
+                    </label>
+                    <select class="form-group__input" id="flex-align-items">
+                      <option value="stretch" selected>stretch</option>
+                      <option value="flex-start">flex-start</option>
+                      <option value="flex-end">flex-end</option>
+                      <option value="center">center</option>
+                      <option value="baseline">baseline</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-group__label" for="flex-align-content">
+                      align-content
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Distributes multiple lines on the cross axis. Only takes effect when flex-wrap is set and items wrap into two or more lines."
+                        aria-label="About align-content">&#9432;</button>
+                    </label>
+                    <select class="form-group__input" id="flex-align-content">
+                      <option value="normal" selected>normal</option>
+                      <option value="flex-start">flex-start</option>
+                      <option value="flex-end">flex-end</option>
+                      <option value="center">center</option>
+                      <option value="space-between">space-between</option>
+                      <option value="space-around">space-around</option>
+                      <option value="stretch">stretch</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-group__label" for="flex-gap">
+                      gap
+                      <button class="info-btn" type="button" tabindex="0"
+                        data-tooltip="Sets spacing between flex items (row-gap and column-gap combined). Does not add space to the outer edges of the container."
+                        aria-label="About gap">&#9432;</button>
+                    </label>
+                    <input class="form-group__input" type="text" id="flex-gap" value="0.5rem"
+                      autocomplete="off" spellcheck="false">
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="control-group">
+                <div class="control-group__header">
+                  <span class="control-group__label">Items</span>
+                  <button class="add-item-btn" id="flex-add-item" type="button">+ Add item</button>
+                </div>
+                <div class="flex-items-list" id="flex-items-list" role="group" aria-label="Flex items configuration"
+                  aria-live="polite"></div>
+              </div>
+
+            </div>
+
+            <div class="tool-preview">
+              <div class="preview-pane">
+                <div class="preview-pane__header">
+                  <span class="preview-pane__label">Preview</span>
+                </div>
+                <div class="preview-container preview-container--flex" id="flex-preview"
+                  aria-label="Flexbox layout preview" role="img"></div>
+              </div>
+              <div class="output-pane">
+                <div class="output-pane__header">
+                  <div class="output-toggle" role="group" aria-label="Output format">
+                    <button class="output-toggle__btn output-toggle__btn--active" type="button"
+                      data-panel="flex" data-mode="css">CSS</button>
+                    <button class="output-toggle__btn" type="button"
+                      data-panel="flex" data-mode="html">HTML</button>
+                  </div>
+                  <label class="selector-group">
+                    <span class="selector-group__prefix" aria-hidden="true">.</span>
+                    <input class="selector-group__input" type="text" id="flex-selector" value="container"
+                      aria-label="CSS class name for the flex container" autocomplete="off" spellcheck="false"
+                      maxlength="40">
+                  </label>
+                  <button class="copy-btn" id="flex-copy-btn" type="button"
+                    aria-label="Copy flexbox CSS to clipboard">Copy</button>
+                </div>
+                <pre class="output-code" id="flex-output" tabindex="0"></pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- AD INLINE MID PAGE -->
+    <div class="ad-slot ad-slot--inline" aria-hidden="true">
+      <span class="ad-slot__label">Advertisement</span>
+    </div>
+
+    <!-- CONTENT + SIDEBAR LAYOUT -->
+    <div class="content-layout">
+
+      <!-- MAIN COPY -->
+      <section class="content-section" aria-labelledby="content-heading">
+        <div class="content-section__body">
+          <h2 id="content-heading">CSS Grid vs Flexbox: When to Use Each</h2>
+          <p>
+            CSS Grid and Flexbox are both layout systems, but they solve different problems. Flexbox works along a
+            single axis: either a row or a column. Grid works in two dimensions simultaneously: rows and columns at
+            the same time. This distinction shapes every decision you make when choosing between them.
+          </p>
+          <p>
+            Use Flexbox when you have a list of items you want to distribute along one axis. Navigation bars,
+            button groups, card rows, and form input layouts are all natural Flexbox use cases. The items
+            themselves drive the layout: they can grow, shrink, or wrap as needed. Flexbox is content-first.
+          </p>
+          <p>
+            Use Grid when you already know the structure of your layout and want to place items into specific
+            tracks. Page-level layouts, magazine-style grids, pricing tables, and dashboard panels are Grid
+            territory. The container defines the tracks first; items slot into them. Grid is layout-first.
+          </p>
+
+          <h3>What This Generator Can Do Right Now</h3>
+          <p>
+            This tool includes practical workflow features on top of raw CSS property controls. In the Grid tab,
+            you can start from templates such as Holy Grail, Sidebar, Card Grid, Sticky Footer, Dashboard, and
+            3 Equal Columns, then fine tune tracks, gaps, and item alignment. You can click empty preview cells to
+            add placed items, drag item edges to resize spans, and use visible grid line numbers to place items
+            accurately by line.
+          </p>
+          <p>
+            In the Subgrid tab, you can add children from the form or by clicking the parent preview, then drag
+            each child edge to resize and test inherited columns, rows, or both axes. In the Flexbox tab, you can
+            configure container properties and per item properties including custom class names, grow, shrink,
+            basis, align-self, and order. All three tabs support CSS and HTML output toggle modes and include
+            class-name inputs so generated markup can match your naming convention.
+          </p>
+
+          <h3>How grid-template-columns Works</h3>
+          <p>
+            The <code>grid-template-columns</code> property defines how many columns the grid has and how wide
+            each one is. You write a space-separated list of track sizes:
+            <code>grid-template-columns: 200px 1fr 1fr</code> creates a three-column grid where the first column
+            is a fixed 200px and the remaining two split the leftover space equally.
+          </p>
+
+          <h3>How grid-template-rows Works</h3>
+          <p>
+            The <code>grid-template-rows</code> property defines row heights in the same way.
+            <code>grid-template-rows: 80px 1fr 60px</code> creates a three-row grid: a fixed header row, a
+            flexible middle row that absorbs leftover space, and a fixed footer row. Rows without explicit sizing
+            default to <code>auto</code>, which shrink-wraps to the tallest content in that row.
+          </p>
+
+          <h3>The fr Unit Explained</h3>
+          <p>
+            The <code>fr</code> unit means "fraction of available space." After all fixed, auto, and content-sized
+            tracks are assigned their space, the browser divides the remaining space by the total number of fr
+            units and allocates proportionally. <code>2fr 1fr</code> means the first column gets twice as much
+            leftover space as the second. This makes fr the primary unit for flexible, responsive grids without
+            media queries.
+          </p>
+
+          <h3>Understanding repeat()</h3>
+          <p>
+            The <code>repeat()</code> function is shorthand for repeating track definitions.
+            <code>repeat(3, 1fr)</code> expands to <code>1fr 1fr 1fr</code>. You can also repeat patterns:
+            <code>repeat(2, 100px 1fr)</code> becomes <code>100px 1fr 100px 1fr</code>. For responsive grids
+            without media queries, use <code>repeat(auto-fill, minmax(250px, 1fr))</code> to create as many
+            columns as fit while keeping each at least 250px wide. <code>auto-fit</code> works the same way but
+            collapses empty tracks so the filled columns stretch to fill the row.
+          </p>
+
+          <h3>Understanding minmax()</h3>
+          <p>
+            The <code>minmax()</code> function sets a minimum and maximum size for a track.
+            <code>minmax(200px, 1fr)</code> means "at least 200px, but grow to fill available space."
+            <code>minmax(0, max-content)</code> means "start at zero but never exceed the content's natural
+            width." This function is especially useful inside <code>repeat()</code> for responsive layouts:
+            <code>repeat(auto-fill, minmax(200px, 1fr))</code> creates a fully responsive grid that wraps
+            without any media queries.
+          </p>
+
+          <h3>min-content and max-content</h3>
+          <p>
+            <code>min-content</code> sizes a track to the smallest width the content can occupy without
+            overflowing. For text, this is the width of the longest unbreakable word. <code>max-content</code>
+            sizes the track to fit all content on a single line with no wrapping at all. These intrinsic sizing
+            keywords give you precise control over content-driven track sizing without guessing pixel values.
+          </p>
+
+          <h3>The gap Property</h3>
+          <p>
+            The <code>gap</code> property (shorthand for <code>row-gap</code> and <code>column-gap</code>) adds
+            spacing between grid tracks or flex items. Unlike margins, gap only applies between items, not on the
+            outer edges. <code>gap: 1rem</code> applies equal spacing in both directions.
+            <code>gap: 1rem 2rem</code> sets row gap and column gap separately. The gap property works identically
+            in both Grid and Flexbox, making it the preferred way to space items in modern CSS.
+          </p>
+
+          <h3>Named Areas and grid-template-areas</h3>
+          <p>
+            <code>grid-template-areas</code> is one of Grid's most powerful and underused features. Instead of
+            calculating line numbers, you describe the layout visually in your CSS using named strings:
+          </p>
+          <pre style="background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:0.5rem;padding:1rem;overflow-x:auto;margin-bottom:1rem;font-size:0.875rem;line-height:1.6;">grid-template-areas:
+  "header header header"
+  "sidebar main   main"
+  "footer footer  footer";</pre>
+          <p>
+            Each quoted string represents one row. Each word in the string represents one column cell in that
+            row. Every area name must form a rectangle, every row must have the same number of tokens, and you
+            assign an element to an area with <code>grid-area: name</code>. Use <code>.</code> for empty cells.
+          </p>
+
+          <h3>Grid Line Numbers and Placement</h3>
+          <p>
+            Every grid track creates numbered lines. A 3-column grid has lines 1 through 4. You place items using
+            <code>grid-column: 1 / 3</code> (span from line 1 to line 3, covering 2 columns) or
+            <code>grid-row: 2 / 4</code> (rows 2 through 3). You can also use <code>span</code>:
+            <code>grid-column: 1 / span 2</code> means "start at line 1 and span 2 tracks." Negative line numbers
+            count from the end: <code>grid-column: 1 / -1</code> spans the entire grid.
+          </p>
+
+          <h3>What is CSS Subgrid?</h3>
+          <p>
+            Subgrid solves a classic alignment problem: you have a parent grid with defined tracks, and a child
+            element that spans multiple tracks. By default, that child starts a brand new grid context and cannot
+            align to the parent's lines. With <code>grid-template-columns: subgrid</code> on the child, it
+            inherits the parent's column tracks for its own children. This makes it possible to achieve column
+            alignment across nested components without hacks.
+          </p>
+          <p>
+            Subgrid is supported in all modern browsers as of 2023. Use it when you have card grids where label,
+            value, and footer rows inside each card need to align with the same rows in adjacent cards. You can
+            apply subgrid to one axis or both: <code>grid-template-columns: subgrid</code> inherits only columns,
+            while adding <code>grid-template-rows: subgrid</code> inherits both axes. A child must span at least
+            2 tracks on an axis to use subgrid on that axis.
+          </p>
+
+          <h3>Flexbox: flex-direction</h3>
+          <p>
+            <code>flex-direction</code> sets the main axis of the flex container. <code>row</code> (default) lays
+            items out horizontally left to right. <code>column</code> stacks them vertically top to bottom.
+            <code>row-reverse</code> and <code>column-reverse</code> flip the item order. Changing
+            <code>flex-direction</code> also changes which axis <code>justify-content</code> and
+            <code>align-items</code> operate on, because those properties always refer to "main" and "cross" axes
+            relative to the direction.
+          </p>
+
+          <h3>Flexbox: flex-wrap</h3>
+          <p>
+            By default, flex items are forced onto a single line (<code>nowrap</code>). Setting
+            <code>flex-wrap: wrap</code> allows items to flow onto multiple lines when they run out of space. This
+            is essential for responsive card layouts. <code>wrap-reverse</code> wraps items in the opposite
+            direction: new lines are added above (in row direction) or to the left (in column direction).
+          </p>
+
+          <h3>Flexbox: justify-content vs align-items</h3>
+          <p>
+            <code>justify-content</code> controls distribution along the main axis (the direction of
+            <code>flex-direction</code>). <code>align-items</code> controls alignment on the cross axis,
+            perpendicular to it. If <code>flex-direction: row</code>, then <code>justify-content</code> moves
+            items left and right and <code>align-items</code> moves them up and down.
+          </p>
+          <p>
+            To center an element both horizontally and vertically with Flexbox:
+            <code>display: flex; justify-content: center; align-items: center</code>. This is the most common
+            Flexbox pattern and works for any size container or child.
+          </p>
+          <p>
+            <code>space-between</code> puts equal space between items with no space on the edges.
+            <code>space-around</code> adds half-size space on the edges. <code>space-evenly</code> distributes
+            identical space between items and on both edges. Each value produces a distinctly different visual
+            result. Use the preview panel to see the difference instantly.
+          </p>
+
+          <h3>Flexbox: align-content</h3>
+          <p>
+            <code>align-content</code> only takes effect when <code>flex-wrap: wrap</code> is set and items wrap
+            onto multiple lines. It controls how the lines themselves are distributed on the cross axis. Think of
+            it as <code>justify-content</code> but for the wrapped lines instead of the individual items. It has
+            no effect on a single-line flex container.
+          </p>
+
+          <h3>The flex Shorthand</h3>
+          <p>
+            The <code>flex</code> shorthand sets three properties at once: <code>flex-grow</code>,
+            <code>flex-shrink</code>, and <code>flex-basis</code>. The default is <code>flex: 0 1 auto</code>,
+            meaning items do not grow, they can shrink, and their natural size is their starting point.
+            <code>flex: 1</code> is shorthand for <code>flex: 1 1 0</code>: items grow and shrink equally,
+            ignoring natural size. This is the "equal columns" pattern.
+          </p>
+
+          <h3>flex-grow, flex-shrink, and flex-basis</h3>
+          <p>
+            <code>flex-grow</code> controls how much an item expands when there is extra space. A value of 0 means
+            the item does not grow. A value of 1 means it grows proportionally with other items. If one item has
+            <code>flex-grow: 2</code> and another has <code>flex-grow: 1</code>, the first gets twice as much
+            extra space.
+          </p>
+          <p>
+            <code>flex-shrink</code> controls how much an item shrinks when there is not enough space. The default
+            of 1 means all items shrink equally. Setting <code>flex-shrink: 0</code> prevents an item from
+            shrinking, which is useful for fixed-width sidebars or icons.
+          </p>
+          <p>
+            <code>flex-basis</code> sets the starting size of an item before grow or shrink apply. <code>auto</code>
+            means "use the element's width or content size." <code>0</code> means "start from nothing and let
+            flex-grow determine the final size." You can also use any CSS length: <code>200px</code>,
+            <code>30%</code>, <code>15rem</code>.
+          </p>
+
+          <h3>align-self and order</h3>
+          <p>
+            <code>align-self</code> overrides the container's <code>align-items</code> value for a single item.
+            If the container sets <code>align-items: stretch</code> but one item should be centered, use
+            <code>align-self: center</code> on that item. The <code>order</code> property changes the visual
+            order of flex items without changing the HTML source order. Items are arranged by ascending order
+            value: lower numbers appear first.
+          </p>
+
+          <h3>Can You Use Grid and Flexbox Together?</h3>
+          <p>
+            Yes, and you often should. A page-level layout is typically Grid: header, sidebar, main, and footer
+            in defined tracks. Within a grid cell, you might use Flexbox to arrange the contents of a navigation
+            bar. The two systems are completely independent per element: being a grid item does not affect whether
+            you can be a flex container for your own children.
+          </p>
+
+          <h3>Responsive Layouts Without Media Queries</h3>
+          <p>
+            Modern CSS layout is capable of fluid responsiveness without a single media query. Grid's
+            <code>repeat(auto-fill, minmax(250px, 1fr))</code> creates a column count that adapts to the viewport.
+            Flexbox's <code>flex-wrap: wrap</code> combined with <code>flex-basis</code> percentages achieves
+            similar results. The <code>clamp()</code> function works for track sizes:
+            <code>clamp(200px, 30vw, 400px)</code> gives you a track that scales between a minimum and maximum.
+            These techniques reduce CSS complexity and eliminate the need for breakpoint-specific layout rules.
+          </p>
+
+          <h3>Browser Support</h3>
+          <p>
+            CSS Grid (including <code>grid-template-areas</code>, <code>repeat()</code>, <code>minmax()</code>,
+            <code>auto-fill</code>, <code>auto-fit</code>) is supported in all modern browsers: Chrome 57+,
+            Firefox 52+, Safari 10.1+, Edge 16+. CSS Subgrid landed in Chrome 117, Firefox 71, Safari 16, and
+            Edge 117. Flexbox has universal support across all modern browsers. The <code>gap</code> property
+            in Flexbox is supported in Chrome 84+, Firefox 63+, Safari 14.1+, and Edge 84+.
+          </p>
+
+          <h3>Common Layout Patterns</h3>
+          <p>
+            <strong>Holy Grail layout:</strong> header, footer, main content, and two sidebars. Use Grid with
+            named areas: <code>"header header header" "nav main aside" "footer footer footer"</code>.
+          </p>
+          <p>
+            <strong>Card grid:</strong> <code>display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem</code>
+            creates a responsive card grid with no media queries.
+          </p>
+          <p>
+            <strong>Sticky footer:</strong> <code>grid-template-rows: auto 1fr auto</code> on a full-height
+            container pushes the footer to the bottom even when content is short.
+          </p>
+          <p>
+            <strong>Centered content:</strong> <code>display: flex; justify-content: center; align-items: center;
+            min-height: 100vh</code> centers any element on the page.
+          </p>
+          <p>
+            <strong>Sidebar layout:</strong> <code>grid-template-columns: 250px 1fr</code> creates a fixed
+            sidebar with a fluid main area. Use <code>minmax(200px, 250px)</code> on the sidebar for a slightly
+            flexible version.
+          </p>
+        </div>
+      </section>
+
+      <!-- SIDEBAR AD -->
+      <aside class="content-sidebar" aria-label="Advertisements">
+        <div class="ad-slot ad-slot--sidebar" aria-hidden="true">
+          <span class="ad-slot__label">Advertisement</span>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- AD MEDIUM RECTANGLE -->
+    <div class="ad-slot ad-slot--rectangle" aria-hidden="true">
+      <span class="ad-slot__label">Advertisement</span>
+    </div>
+
+    <!-- FAQ SECTION -->
+    <section class="faq-section" aria-labelledby="faq-heading">
+      <div class="faq-section__inner">
+        <h2 class="faq-section__title" id="faq-heading">Frequently Asked Questions</h2>
+        <div class="faq__accordion" id="faq-accordion" aria-label="FAQ accordion">
+          <!-- Populated dynamically by js/content.js from data/faq.json -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <p class="site-footer__copy">
+        &copy; <span id="footer-year"></span> CSSLayoutGen. All rights reserved.
+      </p>
+      <p class="site-footer__hub-link-wrap">
+        Looking for more utilities? <a class="site-footer__hub-link" href="https://otherusefultools.com/">Visit OtherUsefulTools.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/content.js"></script>
+
+</body>
+</html>
