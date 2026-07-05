@@ -35,6 +35,15 @@
       }
     })();
   </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZF9WCHKZG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZZF9WCHKZG');
+  </script>
 </head>
 
 <body>
@@ -87,10 +96,10 @@
         <div class="tab-nav" role="tablist" aria-label="Layout type">
           <button class="tab-btn tab-btn--active" role="tab" id="tab-grid" aria-controls="panel-grid"
             aria-selected="true" tabindex="0">Grid</button>
-          <button class="tab-btn" role="tab" id="tab-subgrid" aria-controls="panel-subgrid"
-            aria-selected="false" tabindex="-1">Subgrid</button>
-          <button class="tab-btn" role="tab" id="tab-flexbox" aria-controls="panel-flexbox"
-            aria-selected="false" tabindex="-1">Flexbox</button>
+          <button class="tab-btn" role="tab" id="tab-subgrid" aria-controls="panel-subgrid" aria-selected="false"
+            tabindex="-1">Subgrid</button>
+          <button class="tab-btn" role="tab" id="tab-flexbox" aria-controls="panel-flexbox" aria-selected="false"
+            tabindex="-1">Flexbox</button>
         </div>
 
         <!-- ======================== GRID PANEL ======================== -->
@@ -129,7 +138,8 @@
                       data-tooltip="Fixed pixel width. This track always stays exactly 200px regardless of container or viewport size.">200px</button>
                     <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="repeat(3,1fr)"
                       data-tooltip="Shorthand to repeat a track pattern N times. repeat(3,1fr) is the same as 1fr 1fr 1fr. Supports auto-fill and auto-fit for responsive grids.">repeat()</button>
-                    <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="minmax(100px,1fr)"
+                    <button class="track-hint-btn" type="button" data-target="grid-columns"
+                      data-value="minmax(100px,1fr)"
                       data-tooltip="Sets a minimum and maximum size. minmax(100px,1fr) means at least 100px wide, but grows as a fraction of remaining space.">minmax</button>
                     <button class="track-hint-btn" type="button" data-target="grid-columns" data-value="min-content"
                       data-tooltip="Shrinks to the smallest possible size without overflowing content. For text, this is the longest unbreakable word width.">min-c</button>
@@ -231,8 +241,7 @@
                     Type an area name in each cell. Use the same name across adjacent cells to span. Use
                     <code>.</code> for empty cells.
                   </p>
-                  <div id="grid-areas-grid" class="areas-grid" role="group"
-                    aria-label="Named grid areas editor"></div>
+                  <div id="grid-areas-grid" class="areas-grid" role="group" aria-label="Named grid areas editor"></div>
                   <div class="areas-error" id="grid-areas-error" role="alert" hidden></div>
                 </div>
               </div>
@@ -251,10 +260,9 @@
               <div class="output-pane">
                 <div class="output-pane__header">
                   <div class="output-toggle" role="group" aria-label="Output format">
-                    <button class="output-toggle__btn output-toggle__btn--active" type="button"
-                      data-panel="grid" data-mode="css">CSS</button>
-                    <button class="output-toggle__btn" type="button"
-                      data-panel="grid" data-mode="html">HTML</button>
+                    <button class="output-toggle__btn output-toggle__btn--active" type="button" data-panel="grid"
+                      data-mode="css">CSS</button>
+                    <button class="output-toggle__btn" type="button" data-panel="grid" data-mode="html">HTML</button>
                   </div>
                   <label class="selector-group">
                     <span class="selector-group__prefix" aria-hidden="true">.</span>
@@ -298,14 +306,16 @@
                         data-tooltip="Shrinks to fit content. Grows to fill remaining space if no fr tracks are present.">auto</button>
                       <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="200px"
                         data-tooltip="Fixed pixel width. This track always stays exactly 200px.">200px</button>
-                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="repeat(3,1fr)"
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns"
+                        data-value="repeat(3,1fr)"
                         data-tooltip="Shorthand to repeat a track pattern N times. repeat(3,1fr) = 1fr 1fr 1fr.">repeat()</button>
-                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns" data-value="minmax(100px,1fr)"
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-columns"
+                        data-value="minmax(100px,1fr)"
                         data-tooltip="Sets a minimum and maximum size. minmax(100px,1fr) = at least 100px, grows as fraction.">minmax</button>
                     </div>
                   </div>
-                  <input class="form-group__input" type="text" id="sub-parent-columns"
-                    value="1fr 1fr 1fr 1fr" autocomplete="off" spellcheck="false">
+                  <input class="form-group__input" type="text" id="sub-parent-columns" value="1fr 1fr 1fr 1fr"
+                    autocomplete="off" spellcheck="false">
                 </div>
                 <div class="control-group">
                   <div class="control-group__header">
@@ -317,19 +327,21 @@
                         data-tooltip="Shrinks to fit the tallest content in that row.">auto</button>
                       <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="100px"
                         data-tooltip="Fixed pixel height. This row always stays exactly 100px.">100px</button>
-                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="repeat(3,auto)"
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows"
+                        data-value="repeat(3,auto)"
                         data-tooltip="Shorthand to repeat a track pattern N times. repeat(3,auto) = three content-height rows.">repeat()</button>
-                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows" data-value="minmax(60px,auto)"
+                      <button class="track-hint-btn" type="button" data-target="sub-parent-rows"
+                        data-value="minmax(60px,auto)"
                         data-tooltip="Minimum height of 60px but expands to fit taller content.">minmax</button>
                     </div>
                   </div>
-                  <input class="form-group__input" type="text" id="sub-parent-rows"
-                    value="80px auto 60px" autocomplete="off" spellcheck="false">
+                  <input class="form-group__input" type="text" id="sub-parent-rows" value="80px auto 60px"
+                    autocomplete="off" spellcheck="false">
                 </div>
                 <div class="control-group">
                   <label class="control-group__label" for="sub-parent-gap">Gap</label>
-                  <input class="form-group__input" type="text" id="sub-parent-gap" value="1rem"
-                    style="max-width:10rem;" autocomplete="off" spellcheck="false">
+                  <input class="form-group__input" type="text" id="sub-parent-gap" value="1rem" style="max-width:10rem;"
+                    autocomplete="off" spellcheck="false">
                 </div>
               </fieldset>
 
@@ -354,10 +366,9 @@
               <div class="output-pane">
                 <div class="output-pane__header">
                   <div class="output-toggle" role="group" aria-label="Output format">
-                    <button class="output-toggle__btn output-toggle__btn--active" type="button"
-                      data-panel="subgrid" data-mode="css">CSS</button>
-                    <button class="output-toggle__btn" type="button"
-                      data-panel="subgrid" data-mode="html">HTML</button>
+                    <button class="output-toggle__btn output-toggle__btn--active" type="button" data-panel="subgrid"
+                      data-mode="css">CSS</button>
+                    <button class="output-toggle__btn" type="button" data-panel="subgrid" data-mode="html">HTML</button>
                   </div>
                   <label class="selector-group">
                     <span class="selector-group__prefix" aria-hidden="true">.</span>
@@ -470,8 +481,8 @@
                         data-tooltip="Sets spacing between flex items (row-gap and column-gap combined). Does not add space to the outer edges of the container."
                         aria-label="About gap">&#9432;</button>
                     </label>
-                    <input class="form-group__input" type="text" id="flex-gap" value="0.5rem"
-                      autocomplete="off" spellcheck="false">
+                    <input class="form-group__input" type="text" id="flex-gap" value="0.5rem" autocomplete="off"
+                      spellcheck="false">
                   </div>
                 </div>
               </fieldset>
@@ -498,10 +509,9 @@
               <div class="output-pane">
                 <div class="output-pane__header">
                   <div class="output-toggle" role="group" aria-label="Output format">
-                    <button class="output-toggle__btn output-toggle__btn--active" type="button"
-                      data-panel="flex" data-mode="css">CSS</button>
-                    <button class="output-toggle__btn" type="button"
-                      data-panel="flex" data-mode="html">HTML</button>
+                    <button class="output-toggle__btn output-toggle__btn--active" type="button" data-panel="flex"
+                      data-mode="css">CSS</button>
+                    <button class="output-toggle__btn" type="button" data-panel="flex" data-mode="html">HTML</button>
                   </div>
                   <label class="selector-group">
                     <span class="selector-group__prefix" aria-hidden="true">.</span>
@@ -633,7 +643,8 @@
             <code>grid-template-areas</code> is one of Grid's most powerful and underused features. Instead of
             calculating line numbers, you describe the layout visually in your CSS using named strings:
           </p>
-          <pre style="background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:0.5rem;padding:1rem;overflow-x:auto;margin-bottom:1rem;font-size:0.875rem;line-height:1.6;">grid-template-areas:
+          <pre
+            style="background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:0.5rem;padding:1rem;overflow-x:auto;margin-bottom:1rem;font-size:0.875rem;line-height:1.6;">grid-template-areas:
   "header header header"
   "sidebar main   main"
   "footer footer  footer";</pre>
@@ -783,7 +794,8 @@
             named areas: <code>"header header header" "nav main aside" "footer footer footer"</code>.
           </p>
           <p>
-            <strong>Card grid:</strong> <code>display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem</code>
+            <strong>Card grid:</strong>
+            <code>display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem</code>
             creates a responsive card grid with no media queries.
           </p>
           <p>
@@ -835,7 +847,8 @@
         &copy; <span id="footer-year"></span> CSSLayoutGen. All rights reserved.
       </p>
       <p class="site-footer__hub-link-wrap">
-        Looking for more utilities? <a class="site-footer__hub-link" href="https://otherusefultools.com/">Visit OtherUsefulTools.com</a>
+        Looking for more utilities? <a class="site-footer__hub-link" href="https://otherusefultools.com/">Visit
+          OtherUsefulTools.com</a>
       </p>
     </div>
   </footer>
@@ -844,4 +857,5 @@
   <script src="js/content.js"></script>
 
 </body>
+
 </html>
