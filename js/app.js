@@ -78,7 +78,7 @@
   function gridDefaults() {
     return {
       columns: "1fr 1fr 1fr",
-      rows: "80px 1fr 60px",
+      rows: "1fr 1fr 1fr",
       colGap: "1rem",
       rowGap: "1rem",
       gapLinked: true,
@@ -118,11 +118,11 @@
    */
   function flexDefaults() {
     return {
-      direction: "row",
-      wrap: "nowrap",
-      justifyContent: "flex-start",
-      alignItems: "stretch",
-      alignContent: "normal",
+      direction: "default",
+      wrap: "default",
+      justifyContent: "default",
+      alignItems: "default",
+      alignContent: "default",
       gap: "0.5rem",
       items: [
         {
@@ -974,12 +974,17 @@
       uniqueNames.forEach((name) => {
         const color = getAreaColor(colorMap, name);
         const item = document.createElement("div");
-        item.className = "preview-item";
+        item.className = "preview-item preview-item--area";
         item.style.gridArea = name;
         item.style.backgroundColor = color.bg;
         item.style.borderColor = color.border;
         item.style.color = color.text;
         item.textContent = name;
+        item.dataset.areaName = name;
+        item.title = "Double-click to rename";
+        item.addEventListener("dblclick", () =>
+          startInlineAreaEdit(item, name),
+        );
         preview.appendChild(item);
       });
     } else {
@@ -1020,6 +1025,11 @@
         const gridSel = getGridSelector();
         const name = gridItem.label.trim() || `${gridSel}__item-${idx + 1}`;
         el.textContent = name;
+        el.title = "Double-click to rename";
+        el.addEventListener("dblclick", (ev) => {
+          ev.stopPropagation();
+          startInlineItemEdit(el, idx);
+        });
 
         // Remove button
         const rmBtn = document.createElement("button");
@@ -1041,6 +1051,406 @@
 
     // Grid line numbers (rendered after cells so they overlay)
     renderGridLineNumbers(preview, cols, rows);
+
+    // Track resize handles (only in items mode where bg cells exist)
+    if (!areasValid) {
+      renderTrackHandles(preview, cols, rows);
+    }
+  }
+
+  /* ================================
+     INLINE EDITING
+     ================================ */
+
+  /**
+   * Starts inline editing for a named grid area in the preview.
+   * @param {HTMLElement} el The area element in the preview.
+   * @param {string} oldName The current area name.
+   */
+  function startInlineAreaEdit(el, oldName) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "inline-edit-input";
+    input.value = oldName;
+    input.setAttribute("aria-label", `Rename area ${oldName}`);
+    el.textContent = "";
+    el.appendChild(input);
+    input.focus();
+    input.select();
+
+    const commit = () => {
+      const newName = input.value.trim().replace(/\s+/g, "-") || oldName;
+      if (newName !== oldName) {
+        state.grid.areas = state.grid.areas.map((row) =>
+          row.map((cell) => (cell === oldName ? newName : cell)),
+        );
+        rebuildAreasGrid();
+      }
+      renderGridPreview();
+      renderGridOutput();
+    };
+
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        input.blur();
+      }
+      if (e.key === "Escape") {
+        input.value = oldName;
+        input.blur();
+      }
+    });
+  }
+
+  /**
+   * Starts inline editing for a grid item label in the preview.
+   * @param {HTMLElement} el The item overlay element.
+   * @param {number} idx The item index in state.grid.items.
+   */
+  function startInlineItemEdit(el, idx) {
+    const item = state.grid.items[idx];
+    if (!item) return;
+
+    const gridSel = getGridSelector();
+    const currentLabel = item.label.trim() || `${gridSel}__item-${idx + 1}`;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "inline-edit-input";
+    input.value = currentLabel;
+    input.setAttribute("aria-label", `Rename item ${idx + 1}`);
+
+    // Clear text but keep buttons/handles
+    const children = [...el.childNodes].filter(
+      (n) => n.nodeType === Node.TEXT_NODE,
+    );
+    children.forEach((n) => n.remove());
+    el.insertBefore(input, el.firstChild);
+    input.focus();
+    input.select();
+
+    const commit = () => {
+      const newLabel = input.value.trim();
+      const defaultName = `${gridSel}__item-${idx + 1}`;
+      item.label = newLabel === defaultName ? "" : newLabel;
+      renderGridPreview();
+      renderGridOutput();
+    };
+
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", (e) => {
+      e.stopPropagation();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        input.blur();
+      }
+      if (e.key === "Escape") {
+        input.value = currentLabel;
+        input.blur();
+      }
+    });
+  }
+
+  /**
+   * Starts inline editing for a subgrid child label in the preview.
+   * @param {HTMLElement} el The child overlay element.
+   * @param {number} idx The child index in state.subgrid.children.
+   */
+  function startInlineSubchildEdit(el, idx) {
+    const child = state.subgrid.children[idx];
+    if (!child) return;
+
+    const s = state.subgrid;
+    const currentLabel =
+      child.label.trim() ||
+      (s.children.length === 1 ? ".child" : `.child-${idx + 1}`);
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "inline-edit-input";
+    input.value = currentLabel;
+    input.setAttribute("aria-label", `Rename child ${idx + 1}`);
+
+    const children = [...el.childNodes].filter(
+      (n) => n.nodeType === Node.TEXT_NODE,
+    );
+    children.forEach((n) => n.remove());
+    el.insertBefore(input, el.firstChild);
+    input.focus();
+    input.select();
+
+    const commit = () => {
+      const newLabel = input.value.trim();
+      const defaultName =
+        s.children.length === 1 ? ".child" : `.child-${idx + 1}`;
+      child.label = newLabel === defaultName ? "" : newLabel;
+      renderSubgridChildren();
+      renderSubgridPreview();
+      renderSubgridOutput();
+    };
+
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", (e) => {
+      e.stopPropagation();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        input.blur();
+      }
+      if (e.key === "Escape") {
+        input.value = currentLabel;
+        input.blur();
+      }
+    });
+  }
+
+  /* ================================
+     TRACK RESIZE HANDLES
+     ================================ */
+
+  const trackDrag = {
+    active: false,
+    axis: "",
+    lineIndex: -1,
+    startPos: 0,
+    previewRect: null,
+    tracks: [],
+    handleEl: null,
+  };
+
+  /**
+   * Renders draggable track resize handles between columns and rows.
+   * Uses absolute positioning based on computed grid line positions.
+   * @param {HTMLElement} preview
+   * @param {number} cols
+   * @param {number} rows
+   */
+  function renderTrackHandles(preview, cols, rows) {
+    // Need a frame delay so the grid layout is computed before measuring
+    requestAnimationFrame(() => {
+      if (trackDrag.active) return;
+
+      // Remove old handles
+      preview.querySelectorAll(".track-handle").forEach((h) => h.remove());
+
+      const rect = preview.getBoundingClientRect();
+      const cells = preview.querySelectorAll(".preview-item--bg");
+      if (cells.length === 0) return;
+
+      const colEdges = {};
+      const rowEdges = {};
+
+      cells.forEach((cell) => {
+        const c = parseInt(cell.dataset.col, 10);
+        const r = parseInt(cell.dataset.row, 10);
+        const cr = cell.getBoundingClientRect();
+        colEdges[c] = {
+          left: cr.left - rect.left,
+          right: cr.right - rect.left,
+        };
+        rowEdges[r] = { top: cr.top - rect.top, bottom: cr.bottom - rect.top };
+      });
+
+      // Column handles (between columns)
+      for (let i = 1; i < cols; i++) {
+        const leftEdge = colEdges[i]?.right;
+        const rightEdge = colEdges[i + 1]?.left;
+        if (leftEdge == null || rightEdge == null) continue;
+
+        const midX = (leftEdge + rightEdge) / 2;
+        const handle = document.createElement("div");
+        handle.className = "track-handle track-handle--col";
+        handle.style.left = `${midX - 4}px`;
+        handle.style.top = "0";
+        handle.style.bottom = "0";
+        handle.dataset.axis = "col";
+        handle.dataset.index = String(i);
+        handle.setAttribute(
+          "aria-label",
+          `Resize between column ${i} and ${i + 1}`,
+        );
+        handle.addEventListener("pointerdown", startTrackDrag);
+        preview.appendChild(handle);
+      }
+
+      // Row handles (between rows)
+      for (let i = 1; i < rows; i++) {
+        const topEdge = rowEdges[i]?.bottom;
+        const bottomEdge = rowEdges[i + 1]?.top;
+        if (topEdge == null || bottomEdge == null) continue;
+
+        const midY = (topEdge + bottomEdge) / 2;
+        const handle = document.createElement("div");
+        handle.className = "track-handle track-handle--row";
+        handle.style.top = `${midY - 4}px`;
+        handle.style.left = "0";
+        handle.style.right = "0";
+        handle.dataset.axis = "row";
+        handle.dataset.index = String(i);
+        handle.setAttribute(
+          "aria-label",
+          `Resize between row ${i} and ${i + 1}`,
+        );
+        handle.addEventListener("pointerdown", startTrackDrag);
+        preview.appendChild(handle);
+      }
+    });
+  }
+
+  /**
+   * Starts a track resize drag operation.
+   * @param {PointerEvent} e
+   */
+  function startTrackDrag(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const preview = document.getElementById("grid-preview");
+    if (!preview) return;
+
+    const axis = e.target.dataset.axis;
+    const lineIndex = parseInt(e.target.dataset.index, 10);
+    const rect = preview.getBoundingClientRect();
+    const isCol = axis === "col";
+
+    trackDrag.active = true;
+    trackDrag.axis = axis;
+    trackDrag.lineIndex = lineIndex;
+    trackDrag.startPos = isCol ? e.clientX : e.clientY;
+    trackDrag.previewRect = rect;
+    trackDrag.handleEl = e.target;
+
+    e.target.style.opacity = "1";
+    e.target.style.transition = "none";
+
+    const trackStr = isCol ? state.grid.columns : state.grid.rows;
+    trackDrag.tracks = parseTracks(trackStr);
+
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = isCol ? "col-resize" : "row-resize";
+    document.addEventListener("pointermove", handleTrackDragMove);
+    document.addEventListener("pointerup", stopTrackDrag);
+  }
+
+  /**
+   * Handles pointer move during track resize.
+   * @param {PointerEvent} e
+   */
+  function handleTrackDragMove(e) {
+    if (!trackDrag.active) return;
+
+    const isCol = trackDrag.axis === "col";
+    const currentPos = isCol ? e.clientX : e.clientY;
+    const delta = currentPos - trackDrag.startPos;
+    const totalSize = isCol
+      ? trackDrag.previewRect.width
+      : trackDrag.previewRect.height;
+
+    if (totalSize === 0 || delta === 0) return;
+
+    const idx = trackDrag.lineIndex - 1;
+    const nextIdx = trackDrag.lineIndex;
+
+    const tracks = parseTracks(isCol ? state.grid.columns : state.grid.rows);
+    if (idx < 0 || nextIdx >= tracks.length) return;
+
+    const prevTrack = tracks[idx];
+    const nextTrack = tracks[nextIdx];
+
+    // Only resize tracks that use fr units
+    const prevIsFr = /^[\d.]+fr$/.test(prevTrack);
+    const nextIsFr = /^[\d.]+fr$/.test(nextTrack);
+
+    if (!prevIsFr || !nextIsFr) return;
+
+    const prevVal = parseFloat(prevTrack) || 1;
+    const nextVal = parseFloat(nextTrack) || 1;
+    const totalFr = prevVal + nextVal;
+    const pxPerFr =
+      totalSize /
+      tracks.reduce((sum, t) => {
+        const m = t.match(/^([\d.]+)fr$/);
+        return sum + (m ? parseFloat(m[1]) : 1);
+      }, 0);
+
+    const deltaFr = delta / pxPerFr;
+    const newPrev = Math.max(0.25, Math.round((prevVal + deltaFr) * 4) / 4);
+    const newNext = Math.max(0.25, Math.round((nextVal - deltaFr) * 4) / 4);
+
+    // Only update if values actually changed after snapping
+    if (newPrev === prevVal && newNext === nextVal) return;
+
+    tracks[idx] = `${newPrev}fr`;
+    tracks[nextIdx] = `${newNext}fr`;
+
+    if (isCol) {
+      state.grid.columns = tracks.join(" ");
+    } else {
+      state.grid.rows = tracks.join(" ");
+    }
+
+    trackDrag.startPos = currentPos;
+
+    // Update grid template inline without full DOM rebuild
+    const preview = document.getElementById("grid-preview");
+    if (preview) {
+      preview.style.gridTemplateColumns = state.grid.columns || "1fr";
+      preview.style.gridTemplateRows = state.grid.rows || "auto";
+    }
+
+    // Reposition handle after browser reflows the grid
+    requestAnimationFrame(() => {
+      if (!trackDrag.handleEl || !trackDrag.active) return;
+      const rect = preview.getBoundingClientRect();
+      const cells = preview.querySelectorAll(".preview-item--bg");
+      const lineIdx = trackDrag.lineIndex;
+
+      if (isCol) {
+        let right = 0;
+        let left = 0;
+        cells.forEach((cell) => {
+          const c = parseInt(cell.dataset.col, 10);
+          const cr = cell.getBoundingClientRect();
+          if (c === lineIdx) right = cr.right - rect.left;
+          if (c === lineIdx + 1) left = cr.left - rect.left;
+        });
+        if (right && left) {
+          trackDrag.handleEl.style.left = `${(right + left) / 2 - 8}px`;
+        }
+      } else {
+        let bottom = 0;
+        let top = 0;
+        cells.forEach((cell) => {
+          const r = parseInt(cell.dataset.row, 10);
+          const cr = cell.getBoundingClientRect();
+          if (r === lineIdx) bottom = cr.bottom - rect.top;
+          if (r === lineIdx + 1) top = cr.top - rect.top;
+        });
+        if (bottom && top) {
+          trackDrag.handleEl.style.top = `${(bottom + top) / 2 - 8}px`;
+        }
+      }
+    });
+  }
+
+  /**
+   * Ends a track resize drag and syncs UI.
+   */
+  function stopTrackDrag() {
+    trackDrag.active = false;
+    document.body.style.userSelect = "";
+    document.body.style.cursor = "";
+    document.removeEventListener("pointermove", handleTrackDragMove);
+    document.removeEventListener("pointerup", stopTrackDrag);
+
+    // Sync sidebar inputs
+    const colInput = document.getElementById("grid-columns");
+    const rowInput = document.getElementById("grid-rows");
+    if (colInput) colInput.value = state.grid.columns;
+    if (rowInput) rowInput.value = state.grid.rows;
+
+    renderGridPreview();
+    renderGridOutput();
   }
 
   /**
@@ -1367,16 +1777,19 @@
    * @return {number}
    */
   function snapToLine(pos, lines) {
-    let closest = 1;
-    let minDist = Infinity;
-    for (const [num, px] of Object.entries(lines)) {
-      const dist = Math.abs(pos - px);
-      if (dist < minDist) {
-        minDist = dist;
-        closest = parseInt(num, 10);
-      }
+    const entries = Object.entries(lines)
+      .map(([num, px]) => [parseInt(num, 10), px])
+      .sort((a, b) => a[1] - b[1]);
+
+    // Snap when 25% past a line (not 50%)
+    for (let i = entries.length - 1; i >= 0; i--) {
+      const [num, px] = entries[i];
+      const nextPx = entries[i + 1] ? entries[i + 1][1] : px + 100;
+      const threshold = px + (nextPx - px) * 0.25;
+      if (pos >= threshold) return entries[i + 1] ? entries[i + 1][0] : num;
+      if (pos >= px) return num;
     }
-    return closest;
+    return entries[0] ? entries[0][0] : 1;
   }
 
   /**
@@ -1555,6 +1968,30 @@
         child.label.trim() ||
         (s.children.length === 1 ? ".child" : `.child-${idx + 1}`);
       childEl.textContent = childName;
+      childEl.title = "Double-click to rename";
+      childEl.addEventListener("dblclick", (ev) => {
+        ev.stopPropagation();
+        startInlineSubchildEdit(childEl, idx);
+      });
+
+      // Remove button
+      const rmBtn = document.createElement("button");
+      rmBtn.className = "grid-item-remove";
+      rmBtn.type = "button";
+      rmBtn.textContent = "\u00d7";
+      rmBtn.title = "Remove child";
+      rmBtn.setAttribute("aria-label", `Remove child ${idx + 1}`);
+      rmBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        if (s.children.length > 1) {
+          s.children.splice(idx, 1);
+          renderSubgridChildren();
+          renderSubgridPreview();
+          renderSubgridOutput();
+        }
+      });
+      childEl.appendChild(rmBtn);
+
       childEl.appendChild(createResizeHandles(idx));
       preview.appendChild(childEl);
     });
@@ -1828,16 +2265,21 @@
   function buildFlexCSS() {
     const f = state.flex;
     const selector = getFlexSelector();
-    const lines = [
-      `.${selector} {`,
-      "  display: flex;",
-      `  flex-direction: ${f.direction};`,
-      `  flex-wrap: ${f.wrap};`,
-      `  justify-content: ${f.justifyContent};`,
-      `  align-items: ${f.alignItems};`,
-    ];
+    const lines = [`.${selector} {`, "  display: flex;"];
 
-    if (f.alignContent !== "normal") {
+    if (f.direction !== "default") {
+      lines.push(`  flex-direction: ${f.direction};`);
+    }
+    if (f.wrap !== "default") {
+      lines.push(`  flex-wrap: ${f.wrap};`);
+    }
+    if (f.justifyContent !== "default") {
+      lines.push(`  justify-content: ${f.justifyContent};`);
+    }
+    if (f.alignItems !== "default") {
+      lines.push(`  align-items: ${f.alignItems};`);
+    }
+    if (f.alignContent !== "default") {
       lines.push(`  align-content: ${f.alignContent};`);
     }
 
@@ -1876,11 +2318,11 @@
     const f = state.flex;
     preview.style.cssText = `
       display: flex;
-      flex-direction: ${f.direction};
-      flex-wrap: ${f.wrap};
-      justify-content: ${f.justifyContent};
-      align-items: ${f.alignItems};
-      align-content: ${f.alignContent};
+      flex-direction: ${f.direction === "default" ? "row" : f.direction};
+      flex-wrap: ${f.wrap === "default" ? "nowrap" : f.wrap};
+      justify-content: ${f.justifyContent === "default" ? "flex-start" : f.justifyContent};
+      align-items: ${f.alignItems === "default" ? "stretch" : f.alignItems};
+      align-content: ${f.alignContent === "default" ? "normal" : f.alignContent};
       gap: ${f.gap || "0"};
     `;
     preview.innerHTML = "";

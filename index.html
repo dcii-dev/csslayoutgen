@@ -170,7 +170,7 @@
                       data-tooltip="Sets a minimum height of 60px but expands to fit taller content. Prevents rows from collapsing while staying flexible.">minmax</button>
                   </div>
                 </div>
-                <input class="form-group__input" type="text" id="grid-rows" value="80px 1fr 60px" autocomplete="off"
+                <input class="form-group__input" type="text" id="grid-rows" value="1fr 1fr 1fr" autocomplete="off"
                   spellcheck="false" aria-describedby="grid-rows-hint">
                 <span class="form-group__hint" id="grid-rows-hint">Space-separated track sizes. Use
                   <code>auto</code> to shrink-wrap content.</span>
@@ -407,7 +407,8 @@
                         aria-label="About flex-direction">&#9432;</button>
                     </label>
                     <select class="form-group__input" id="flex-direction">
-                      <option value="row" selected>row</option>
+                      <option value="default" selected>default</option>
+                      <option value="row">row</option>
                       <option value="row-reverse">row-reverse</option>
                       <option value="column">column</option>
                       <option value="column-reverse">column-reverse</option>
@@ -421,7 +422,8 @@
                         aria-label="About flex-wrap">&#9432;</button>
                     </label>
                     <select class="form-group__input" id="flex-wrap">
-                      <option value="nowrap" selected>nowrap</option>
+                      <option value="default" selected>default</option>
+                      <option value="nowrap">nowrap</option>
                       <option value="wrap">wrap</option>
                       <option value="wrap-reverse">wrap-reverse</option>
                     </select>
@@ -434,7 +436,8 @@
                         aria-label="About justify-content">&#9432;</button>
                     </label>
                     <select class="form-group__input" id="flex-justify">
-                      <option value="flex-start" selected>flex-start</option>
+                      <option value="default" selected>default</option>
+                      <option value="flex-start">flex-start</option>
                       <option value="flex-end">flex-end</option>
                       <option value="center">center</option>
                       <option value="space-between">space-between</option>
@@ -450,7 +453,8 @@
                         aria-label="About align-items">&#9432;</button>
                     </label>
                     <select class="form-group__input" id="flex-align-items">
-                      <option value="stretch" selected>stretch</option>
+                      <option value="default" selected>default</option>
+                      <option value="stretch">stretch</option>
                       <option value="flex-start">flex-start</option>
                       <option value="flex-end">flex-end</option>
                       <option value="center">center</option>
@@ -465,7 +469,8 @@
                         aria-label="About align-content">&#9432;</button>
                     </label>
                     <select class="form-group__input" id="flex-align-content">
-                      <option value="normal" selected>normal</option>
+                      <option value="default" selected>default</option>
+                      <option value="normal">normal</option>
                       <option value="flex-start">flex-start</option>
                       <option value="flex-end">flex-end</option>
                       <option value="center">center</option>
