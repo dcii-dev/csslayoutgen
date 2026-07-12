@@ -623,6 +623,145 @@
   }
 
   /**
+   * Maps a CSS gap value to the closest Tailwind gap utility.
+   * @param {string} val CSS gap value (e.g. "1rem", "16px", "0.5rem").
+   * @return {string} Tailwind class like "gap-4".
+   */
+  function gapToTailwind(val) {
+    const trimmed = (val || "").trim();
+    if (!trimmed || trimmed === "0") return "gap-0";
+    const remMap = {
+      "0.25rem": "gap-1",
+      "0.5rem": "gap-2",
+      "0.75rem": "gap-3",
+      "1rem": "gap-4",
+      "1.25rem": "gap-5",
+      "1.5rem": "gap-6",
+      "1.75rem": "gap-7",
+      "2rem": "gap-8",
+      "2.5rem": "gap-10",
+      "3rem": "gap-12",
+      "4rem": "gap-16",
+      "5rem": "gap-20",
+    };
+    const pxMap = {
+      "1px": "gap-px",
+      "2px": "gap-0.5",
+      "4px": "gap-1",
+      "6px": "gap-1.5",
+      "8px": "gap-2",
+      "10px": "gap-2.5",
+      "12px": "gap-3",
+      "14px": "gap-3.5",
+      "16px": "gap-4",
+      "20px": "gap-5",
+      "24px": "gap-6",
+      "28px": "gap-7",
+      "32px": "gap-8",
+      "40px": "gap-10",
+      "48px": "gap-12",
+      "64px": "gap-16",
+      "80px": "gap-20",
+    };
+    if (remMap[trimmed]) return remMap[trimmed];
+    if (pxMap[trimmed]) return pxMap[trimmed];
+    return `gap-[${trimmed}]`;
+  }
+
+  /**
+   * Maps a CSS gap value to column-gap Tailwind utility.
+   * @param {string} val CSS gap value.
+   * @return {string}
+   */
+  function colGapToTailwind(val) {
+    return gapToTailwind(val).replace("gap-", "gap-x-");
+  }
+
+  /**
+   * Maps a CSS gap value to row-gap Tailwind utility.
+   * @param {string} val CSS gap value.
+   * @return {string}
+   */
+  function rowGapToTailwind(val) {
+    return gapToTailwind(val).replace("gap-", "gap-y-");
+  }
+
+  /**
+   * Builds a Tailwind classes output string for the grid tab.
+   * @return {string}
+   */
+  function buildGridTailwind() {
+    const { columns, rows, colGap, rowGap, alignItems, justifyItems, items } =
+      state.grid;
+    const classes = ["grid"];
+
+    const colTracks = parseTracks(columns);
+    const rowTracks = parseTracks(rows);
+
+    const isSimpleCols =
+      colTracks.length > 0 && colTracks.every((t) => t === "1fr");
+    if (isSimpleCols) {
+      classes.push(`grid-cols-${colTracks.length}`);
+    } else if (columns.trim()) {
+      classes.push(`grid-cols-[${columns.trim().replace(/\s+/g, "_")}]`);
+    }
+
+    const isSimpleRows =
+      rowTracks.length > 0 && rowTracks.every((t) => t === "1fr");
+    if (isSimpleRows) {
+      classes.push(`grid-rows-${rowTracks.length}`);
+    } else if (rows.trim()) {
+      classes.push(`grid-rows-[${rows.trim().replace(/\s+/g, "_")}]`);
+    }
+
+    const cg = colGap.trim();
+    const rg = rowGap.trim();
+    if (cg && rg && cg === rg) {
+      classes.push(gapToTailwind(cg));
+    } else {
+      if (cg) classes.push(colGapToTailwind(cg));
+      if (rg) classes.push(rowGapToTailwind(rg));
+    }
+
+    const alignMap = {
+      center: "items-center",
+      start: "items-start",
+      end: "items-end",
+      baseline: "items-baseline",
+    };
+    const justifyMap = {
+      center: "justify-items-center",
+      start: "justify-items-start",
+      end: "justify-items-end",
+    };
+    if (alignItems && alignMap[alignItems]) classes.push(alignMap[alignItems]);
+    if (justifyItems && justifyMap[justifyItems])
+      classes.push(justifyMap[justifyItems]);
+
+    const lines = [`<!-- Container -->`, `<div class="${classes.join(" ")}">`];
+
+    if (items.length > 0) {
+      items.forEach((item, idx) => {
+        const label = item.label.trim() || `Item ${idx + 1}`;
+        const itemClasses = [];
+        itemClasses.push(`col-start-${item.colStart}`);
+        itemClasses.push(`col-end-${item.colEnd}`);
+        itemClasses.push(`row-start-${item.rowStart}`);
+        itemClasses.push(`row-end-${item.rowEnd}`);
+        lines.push(`  <div class="${itemClasses.join(" ")}">${label}</div>`);
+      });
+    } else {
+      const total = colTracks.length * rowTracks.length;
+      for (let i = 0; i < Math.min(total, 48); i++) {
+        lines.push(`  <div>${i + 1}</div>`);
+      }
+    }
+
+    lines.push("</div>");
+    return lines.join("\n");
+  }
+
+  /**
    * Updates the grid CSS/HTML output element based on active output mode.
    */
   function renderGridOutput() {
@@ -643,7 +782,13 @@
     }
 
     const mode = state.gridOutputMode || "css";
-    el.textContent = mode === "html" ? buildGridHTML() : buildGridCSS();
+    if (mode === "html") {
+      el.textContent = buildGridHTML();
+    } else if (mode === "tailwind") {
+      el.textContent = buildGridTailwind();
+    } else {
+      el.textContent = buildGridCSS();
+    }
   }
 
   /* ================================
@@ -2020,13 +2165,78 @@
   }
 
   /**
+   * Builds Tailwind classes output for the subgrid tab.
+   * @return {string}
+   */
+  function buildSubgridTailwind() {
+    const s = state.subgrid;
+    const parentClasses = ["grid"];
+
+    const parentCols = s.parentColumns.trim();
+    const parentColTracks = parseTracks(parentCols);
+    if (parentColTracks.every((t) => t === "1fr")) {
+      parentClasses.push(`grid-cols-${parentColTracks.length}`);
+    } else {
+      parentClasses.push(`grid-cols-[${parentCols.replace(/\s+/g, "_")}]`);
+    }
+
+    const parentRows = s.parentRows.trim();
+    const parentRowTracks = parseTracks(parentRows);
+    if (parentRowTracks.every((t) => t === "1fr")) {
+      parentClasses.push(`grid-rows-${parentRowTracks.length}`);
+    } else {
+      parentClasses.push(`grid-rows-[${parentRows.replace(/\s+/g, "_")}]`);
+    }
+
+    parentClasses.push(gapToTailwind(s.parentGap));
+
+    const lines = [
+      `<!-- Parent grid -->`,
+      `<div class="${parentClasses.join(" ")}">`,
+    ];
+
+    s.children.forEach((child, idx) => {
+      const colSubgrid = child.axes === "both" || child.axes === "columns";
+      const rowSubgrid = child.axes === "both" || child.axes === "rows";
+      const childClasses = [
+        `col-start-${child.colStart}`,
+        `col-end-${child.colEnd}`,
+        `row-start-${child.rowStart}`,
+        `row-end-${child.rowEnd}`,
+        "grid",
+      ];
+      if (colSubgrid) childClasses.push("grid-cols-subgrid");
+      if (rowSubgrid) childClasses.push("grid-rows-subgrid");
+
+      const label =
+        child.label.trim() ||
+        (s.children.length === 1 ? "child" : `child-${idx + 1}`);
+      lines.push(
+        `  <!-- ${label} -->`,
+        `  <div class="${childClasses.join(" ")}">`,
+      );
+      lines.push(`    <!-- subgrid content -->`);
+      lines.push(`  </div>`);
+    });
+
+    lines.push("</div>");
+    return lines.join("\n");
+  }
+
+  /**
    * Updates the subgrid CSS/HTML output element.
    */
   function renderSubgridOutput() {
     const el = document.getElementById("sub-output");
     if (!el) return;
     const mode = state.subOutputMode || "css";
-    el.textContent = mode === "html" ? buildSubgridHTML() : buildSubgridCSS();
+    if (mode === "html") {
+      el.textContent = buildSubgridHTML();
+    } else if (mode === "tailwind") {
+      el.textContent = buildSubgridTailwind();
+    } else {
+      el.textContent = buildSubgridCSS();
+    }
   }
 
   /**
@@ -2361,13 +2571,121 @@
   }
 
   /**
+   * Builds Tailwind classes output for the flexbox tab.
+   * @return {string}
+   */
+  function buildFlexTailwind() {
+    const f = state.flex;
+    const classes = ["flex"];
+
+    const dirMap = {
+      row: "",
+      "row-reverse": "flex-row-reverse",
+      column: "flex-col",
+      "column-reverse": "flex-col-reverse",
+    };
+    const wrapMap = {
+      wrap: "flex-wrap",
+      nowrap: "flex-nowrap",
+      "wrap-reverse": "flex-wrap-reverse",
+    };
+    const justifyMap = {
+      "flex-start": "justify-start",
+      "flex-end": "justify-end",
+      center: "justify-center",
+      "space-between": "justify-between",
+      "space-around": "justify-around",
+      "space-evenly": "justify-evenly",
+    };
+    const alignMap = {
+      "flex-start": "items-start",
+      "flex-end": "items-end",
+      center: "items-center",
+      stretch: "items-stretch",
+      baseline: "items-baseline",
+    };
+    const alignContentMap = {
+      "flex-start": "content-start",
+      "flex-end": "content-end",
+      center: "content-center",
+      "space-between": "content-between",
+      "space-around": "content-around",
+      "space-evenly": "content-evenly",
+      stretch: "content-stretch",
+    };
+
+    if (f.direction !== "default" && dirMap[f.direction]) {
+      classes.push(dirMap[f.direction]);
+    }
+    if (f.wrap !== "default" && wrapMap[f.wrap]) {
+      classes.push(wrapMap[f.wrap]);
+    }
+    if (f.justifyContent !== "default" && justifyMap[f.justifyContent]) {
+      classes.push(justifyMap[f.justifyContent]);
+    }
+    if (f.alignItems !== "default" && alignMap[f.alignItems]) {
+      classes.push(alignMap[f.alignItems]);
+    }
+    if (f.alignContent !== "default" && alignContentMap[f.alignContent]) {
+      classes.push(alignContentMap[f.alignContent]);
+    }
+    if (f.gap.trim()) {
+      classes.push(gapToTailwind(f.gap));
+    }
+
+    const lines = [`<!-- Container -->`, `<div class="${classes.join(" ")}">`];
+
+    f.items.forEach((item, idx) => {
+      const label = item.label.trim() || `Item ${idx + 1}`;
+      const itemClasses = [];
+      const flexVal = buildFlexShorthand(item);
+      if (flexVal === "1 1 0%") {
+        itemClasses.push("flex-1");
+      } else if (flexVal === "1 1 auto") {
+        itemClasses.push("flex-auto");
+      } else if (flexVal === "0 0 auto") {
+        itemClasses.push("flex-none");
+      } else if (flexVal !== "0 1 auto") {
+        itemClasses.push(`flex-[${flexVal.replace(/\s+/g, "_")}]`);
+      }
+
+      const selfMap = {
+        "flex-start": "self-start",
+        "flex-end": "self-end",
+        center: "self-center",
+        stretch: "self-stretch",
+        baseline: "self-baseline",
+      };
+      if (item.alignSelf !== "auto" && selfMap[item.alignSelf]) {
+        itemClasses.push(selfMap[item.alignSelf]);
+      }
+      if (item.order !== 0) {
+        itemClasses.push(`order-${item.order}`);
+      }
+
+      const cls =
+        itemClasses.length > 0 ? ` class="${itemClasses.join(" ")}"` : "";
+      lines.push(`  <div${cls}>${label}</div>`);
+    });
+
+    lines.push("</div>");
+    return lines.join("\n");
+  }
+
+  /**
    * Updates the flex CSS/HTML output element.
    */
   function renderFlexOutput() {
     const el = document.getElementById("flex-output");
     if (!el) return;
     const mode = state.flexOutputMode || "css";
-    el.textContent = mode === "html" ? buildFlexHTML() : buildFlexCSS();
+    if (mode === "html") {
+      el.textContent = buildFlexHTML();
+    } else if (mode === "tailwind") {
+      el.textContent = buildFlexTailwind();
+    } else {
+      el.textContent = buildFlexCSS();
+    }
   }
 
   /**
