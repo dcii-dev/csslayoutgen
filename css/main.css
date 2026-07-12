@@ -711,6 +711,14 @@ select.form-group__input {
   min-width: 0;
 }
 
+/* Keep the preview in view while a tall controls panel scrolls. */
+@media (min-width: 56.0625em) {
+  .tool-preview {
+    position: sticky;
+    top: 5rem;
+  }
+}
+
 /* ================================
    PREVIEW PANE
    ================================ */
